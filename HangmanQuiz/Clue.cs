@@ -102,11 +102,39 @@ namespace HangmanQuiz
                 if (numberOfTrials >= numberOfTrialsLimit)
                 {
                     Console.WriteLine("Game over!");
+                    Console.WriteLine("Press any key to continue..");
                     break;
+                    
                 }
                 Console.WriteLine(hiddenWord);
             }
+            Console.WriteLine($"Your clue is: {word}");
+            Console.ReadKey();
+            Console.Clear();
+            NewGame();
+
             return hiddenWord;
+        }
+        public void NewGame()
+        {
+            Console.WriteLine("Are you ready for the next game?");
+            Console.WriteLine("Click right answer:");
+            Console.WriteLine("1.Play again!\n2.Exit");
+            char game = Console.ReadKey().KeyChar;
+            Console.Clear();
+            switch (game)
+            {
+                case '1':
+                    DisplayClue();
+                    break;
+                case '2':
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Your action does not exist");
+                    Console.Clear();
+                    break;
+            }
         }
     }
 }

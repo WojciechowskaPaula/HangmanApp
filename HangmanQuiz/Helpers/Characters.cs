@@ -9,7 +9,6 @@ namespace HangmanQuiz.Helpers
     public static class Characters
     {
         public static char Underscore = '_';
-       
         public static char WhiteSpace = ' ';
     }
 }
