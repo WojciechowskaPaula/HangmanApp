@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using HangmanQuiz.Helpers;
 namespace HangmanQuiz
 {
     class Program

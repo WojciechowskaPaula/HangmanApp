@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HangmanQuiz.Helpers;
+
 
 namespace HangmanQuiz
 {
@@ -43,42 +45,13 @@ namespace HangmanQuiz
         {
             string word = GetRandomClue();
             Console.WriteLine($"Your clue consist of {word.Length} letters");
-            char underscore = '_';
-            char whiteSpace = ' ';
             string hiddenWord = "";
-            int numberOfTrialsLimit = word.Length + 2;
-            int numberOfTrials = 0;
             for (int i = 0; i < word.Length; i++)
             {
-                hiddenWord = hiddenWord + underscore + whiteSpace;
+                hiddenWord = hiddenWord + Characters.Underscore + Characters.WhiteSpace;
             }
-            word = string.Join(" ", word.ToCharArray());
             Console.WriteLine(hiddenWord);
-            while (hiddenWord.Contains(underscore))
-            {
-                string userResponse = "";
-                Console.WriteLine("Enter only one letter:");
-                userResponse = Console.ReadLine();
-                CheckUserAnswer(userResponse);
-                for (int i = 0; i < word.Length; i++)
-                {
-                    if (word[i].ToString() == userResponse)
-                    {
-                        hiddenWord = hiddenWord.Remove(i, 1).Insert(i, userResponse);
-                    }
-                }
-                if(!word.Contains(userResponse))
-                {
-                    numberOfTrials++;
-                    Console.WriteLine($"Incorrect answer, You have {numberOfTrialsLimit - numberOfTrials} trails left");
-                }
-                if (numberOfTrials >= numberOfTrialsLimit)
-                {
-                    Console.WriteLine("Game over!");
-                    break;
-                }
-                Console.WriteLine(hiddenWord);
-            }
+            GuessClue(word,hiddenWord);
             return hiddenWord;
         }
         public bool CheckUserAnswer(string userResponse)
@@ -102,6 +75,38 @@ namespace HangmanQuiz
                 Console.WriteLine("Incorrect answer, please enter a letter.");
             }
             return result;
+        }
+        public string GuessClue(string word, string hiddenWord)
+        {
+            int numberOfTrialsLimit = word.Length + 2;
+            int numberOfTrials = 0;
+            word = string.Join(" ", word.ToCharArray());
+            while (hiddenWord.Contains(Characters.Underscore))
+            {
+                string userResponse = "";
+                Console.WriteLine("Enter only one letter:");
+                userResponse = Console.ReadLine();
+                CheckUserAnswer(userResponse);
+                for (int i = 0; i < word.Length; i++)
+                {
+                    if (word[i].ToString() == userResponse)
+                    {
+                        hiddenWord = hiddenWord.Remove(i, 1).Insert(i, userResponse);
+                    }
+                }
+                if (!word.Contains(userResponse))
+                {
+                    numberOfTrials++;
+                    Console.WriteLine($"Incorrect answer, You have {numberOfTrialsLimit - numberOfTrials} trails left");
+                }
+                if (numberOfTrials >= numberOfTrialsLimit)
+                {
+                    Console.WriteLine("Game over!");
+                    break;
+                }
+                Console.WriteLine(hiddenWord);
+            }
+            return hiddenWord;
         }
     }
 }
