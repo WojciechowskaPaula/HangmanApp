@@ -17,7 +17,7 @@ namespace HangmanQuiz
             if (!directoryExist)
             {
                 Directory.CreateDirectory(directoryPath);
-                using (FileStream file = File.Open(filePath, FileMode.CreateNew, FileAccess.ReadWrite)) 
+                using (FileStream file = File.Open(filePath, FileMode.CreateNew, FileAccess.ReadWrite))
                 {
                     using (StreamWriter streamWritter = new StreamWriter(file))
                     {
@@ -46,18 +46,20 @@ namespace HangmanQuiz
             char underscore = '_';
             char whiteSpace = ' ';
             string hiddenWord = "";
-            
+            int numberOfTrialsLimit = word.Length + 2;
+            int numberOfTrials = 0;
             for (int i = 0; i < word.Length; i++)
             {
                 hiddenWord = hiddenWord + underscore + whiteSpace;
             }
             word = string.Join(" ", word.ToCharArray());
             Console.WriteLine(hiddenWord);
-            
             while (hiddenWord.Contains(underscore))
             {
+                string userResponse = "";
                 Console.WriteLine("Enter only one letter:");
-                string userResponse = Console.ReadLine();
+                userResponse = Console.ReadLine();
+                CheckUserAnswer(userResponse);
                 for (int i = 0; i < word.Length; i++)
                 {
                     if (word[i].ToString() == userResponse)
@@ -65,10 +67,41 @@ namespace HangmanQuiz
                         hiddenWord = hiddenWord.Remove(i, 1).Insert(i, userResponse);
                     }
                 }
+                if(!word.Contains(userResponse))
+                {
+                    numberOfTrials++;
+                    Console.WriteLine($"Incorrect answer, You have {numberOfTrialsLimit - numberOfTrials} trails left");
+                }
+                if (numberOfTrials >= numberOfTrialsLimit)
+                {
+                    Console.WriteLine("Game over!");
+                    break;
+                }
                 Console.WriteLine(hiddenWord);
             }
             return hiddenWord;
-
+        }
+        public bool CheckUserAnswer(string userResponse)
+        {
+            bool result = false;
+            userResponse = userResponse.ToLower();
+            char[] userResponseArr = userResponse.ToCharArray();
+            if (userResponseArr.Length >= 2)
+            {
+                result = false;
+                Console.WriteLine("You enter to many signs, please try again.");
+            }
+            else if (String.IsNullOrEmpty(userResponse))
+            {
+                result = false;
+                Console.WriteLine("You didn't give an answer, Please try again.");
+            }
+            else if (!Char.IsLetter(userResponseArr[0]))
+            {
+                result = true;
+                Console.WriteLine("Incorrect answer, please enter a letter.");
+            }
+            return result;
         }
     }
 }
