@@ -34,6 +34,7 @@ namespace HangmanQuiz
             var clues = File.ReadLines(filePath);
             return clues.ToList();
         }
+
         public string GetRandomClue() //losowanie
         {
             List<string> clues = GetClueList();
@@ -104,7 +105,6 @@ namespace HangmanQuiz
                     Console.WriteLine("Game over!");
                     Console.WriteLine("Press any key to continue..");
                     break;
-                    
                 }
                 Console.WriteLine(hiddenWord);
             }
