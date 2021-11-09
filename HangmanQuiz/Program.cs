@@ -14,10 +14,8 @@ namespace HangmanQuiz
             Console.ReadKey();
             Console.Clear();
             MenuAction.ChooseClueCategory();
-            
             Console.Clear();
-            Clue clue = new Clue();
-            string randomWord = clue.DisplayClue();
+
         }
 
     }

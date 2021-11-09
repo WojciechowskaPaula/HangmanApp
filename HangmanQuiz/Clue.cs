@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using HangmanQuiz.Helpers;
 
@@ -11,40 +13,81 @@ namespace HangmanQuiz
 {
     public class Clue
     {
-        private List<string> GetClueList()
+        private List<string> GetClueList(CategoryName categoryName)
         {
             string directoryPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues";
-            string filePath = @$"{directoryPath}\Clues.txt";
+            string iTPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\IT.txt";
+            string countriesPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\Coutries.txt";
+            string foodPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\Food.txt";
             bool directoryExist = Directory.Exists(directoryPath);
             if (!directoryExist)
             {
                 Directory.CreateDirectory(directoryPath);
-                using (FileStream file = File.Open(filePath, FileMode.CreateNew, FileAccess.ReadWrite))
-                {
-                    using (StreamWriter streamWritter = new StreamWriter(file))
+                using (FileStream streamFile = File.Open(iTPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                { 
+                    using (StreamWriter streamWriterIt = new StreamWriter(streamFile))
                     {
-                        streamWritter.WriteLine("keyboard");
-                        streamWritter.WriteLine("mouse");
-                        streamWritter.WriteLine("network");
-                        streamWritter.WriteLine("browser");
-                        streamWritter.WriteLine("server");
+                        streamWriterIt.WriteLine("keyboard");
+                        streamWriterIt.WriteLine("mouse");
+                        streamWriterIt.WriteLine("network");
+                        streamWriterIt.WriteLine("browser");
+                        streamWriterIt.WriteLine("server");
+                        streamWriterIt.WriteLine("cookies");
+                    }
+                }
+                using (FileStream streamFile = File.Open(countriesPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                {
+                    using (StreamWriter streamWriterCountries = new StreamWriter(streamFile))
+                    {
+                        streamWriterCountries.WriteLine("denmark");
+                        streamWriterCountries.WriteLine("norway");
+                        streamWriterCountries.WriteLine("finland");
+                        streamWriterCountries.WriteLine("switzerland");
+                        streamWriterCountries.WriteLine("germany");
+                        streamWriterCountries.WriteLine("russia");
+                    }
+                }
+                using (FileStream streamFile = File.Open(foodPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                {
+                    using (StreamWriter streamWriterFood = new StreamWriter(streamFile))
+                    {
+                        streamWriterFood.WriteLine("watermelon");
+                        streamWriterFood.WriteLine("chicken");
+                        streamWriterFood.WriteLine("salmon");
+                        streamWriterFood.WriteLine("salad");
+                        streamWriterFood.WriteLine("yogurt");
+                        streamWriterFood.WriteLine("cucumber");
                     }
                 }
             }
-            var clues = File.ReadLines(filePath);
-            return clues.ToList();
+            if(categoryName == CategoryName.IT)
+            {
+                List<string> iTClues = File.ReadLines(iTPath).ToList();
+                return iTClues;
+            }
+            else if(categoryName == CategoryName.Countries)
+            {
+                List<string> countryClues = File.ReadLines(countriesPath).ToList();
+                return countryClues;
+            }
+            else
+            {
+                List<string> foodClues = File.ReadLines(foodPath).ToList();
+                return foodClues;
+            }
         }
 
-        public string GetRandomClue() //losowanie
+        public string GetRandomClue(CategoryName categoryName)
         {
-            List<string> clues = GetClueList();
+            List<string> clues = GetClueList(categoryName);
             string word = clues.OrderBy(x => Guid.NewGuid()).First();
             return word;
         }
 
-        public string DisplayClue()
+        public string DisplayClue(CategoryName category)
         {
-            string word = GetRandomClue();
+            string word = GetRandomClue(category);
+            Console.Clear();
             Console.WriteLine($"Your clue consist of {word.Length} letters");
             string hiddenWord = "";
             for (int i = 0; i < word.Length; i++)
@@ -52,7 +95,7 @@ namespace HangmanQuiz
                 hiddenWord = hiddenWord + Characters.Underscore + Characters.WhiteSpace;
             }
             Console.WriteLine(hiddenWord);
-            GuessClue(word,hiddenWord);
+            GuessClue(word,hiddenWord,category);
             return hiddenWord;
         }
         public bool CheckUserAnswer(string userResponse)
@@ -77,7 +120,7 @@ namespace HangmanQuiz
             }
             return result;
         }
-        public string GuessClue(string word, string hiddenWord)
+        public string GuessClue(string word, string hiddenWord, CategoryName categoryName)
         {
             int numberOfTrialsLimit = word.Length + 2;
             int numberOfTrials = 0;
@@ -108,7 +151,17 @@ namespace HangmanQuiz
                 }
                 Console.WriteLine(hiddenWord);
             }
-            Console.WriteLine($"Your clue is: {word}");
+            if(categoryName == CategoryName.Countries)
+            {
+                char[] wordarr = word.ToCharArray();
+                wordarr[0] = char.ToUpper(wordarr[0]);
+                string newWord = wordarr[0] + word.Substring(1);
+                Console.WriteLine($"Your clue is: {newWord}");
+            }
+            else 
+            {
+                Console.WriteLine($"Your clue is: {word}");
+            }
             Console.ReadKey();
             Console.Clear();
             NewGame();
@@ -125,7 +178,7 @@ namespace HangmanQuiz
             switch (game)
             {
                 case '1':
-                    DisplayClue();
+                    MenuAction.ChooseClueCategory();
                     break;
                 case '2':
                     Environment.Exit(0);

@@ -12,21 +12,26 @@ namespace HangmanQuiz
         public static void ChooseClueCategory()
         {
             Console.WriteLine("Choose one category:");
-            Console.WriteLine($"1.{Category.CategoryName.IT}\n2.{Category.CategoryName.Countries}\n3.{Category.CategoryName.Food}");
+            Console.WriteLine($"1.{CategoryName.IT}\n2.{CategoryName.Countries}\n3.{CategoryName.Food}");
             char userAnswer = Console.ReadKey().KeyChar;
-            if(userAnswer == '1')
+            Clue clue = new Clue();
+            if (userAnswer == '1')
             {
-                Console.WriteLine(Category.CategoryName.IT);
+                var category = CategoryName.IT;
+                
+                clue.DisplayClue(category);
             }
             else if(userAnswer == '2')
             {
-                Console.WriteLine(Category.CategoryName.Countries);
+                var category = CategoryName.Countries;
+                
+                clue.DisplayClue(category);
             }
             else if (userAnswer == '3')
             {
-                Console.WriteLine(Category.CategoryName.Food);
+                var category = CategoryName.Food;
+                clue.DisplayClue(category);
             }
         }
-        
     }
 }

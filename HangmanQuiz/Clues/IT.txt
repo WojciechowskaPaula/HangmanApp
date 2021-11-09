@@ -3,3 +3,4 @@ mouse
 network
 browser
 server
+cookies
