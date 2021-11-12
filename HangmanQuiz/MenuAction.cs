@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HangmanQuiz.Helpers;
 
 namespace HangmanQuiz
@@ -18,13 +14,11 @@ namespace HangmanQuiz
             if (userAnswer == '1')
             {
                 var category = CategoryName.IT;
-                
                 clue.DisplayClue(category);
             }
             else if(userAnswer == '2')
             {
                 var category = CategoryName.Countries;
-                
                 clue.DisplayClue(category);
             }
             else if (userAnswer == '3')

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using HangmanQuiz.Helpers;
 
 namespace HangmanQuiz
 {
@@ -15,8 +13,6 @@ namespace HangmanQuiz
             Console.Clear();
             MenuAction.ChooseClueCategory();
             Console.Clear();
-
         }
-
     }
 }

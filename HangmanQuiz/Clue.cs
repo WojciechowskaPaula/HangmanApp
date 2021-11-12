@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using HangmanQuiz.Helpers;
 
 
@@ -13,17 +9,28 @@ namespace HangmanQuiz
 {
     public class Clue
     {
+        public string DisplayClue(CategoryName category)
+        {
+            string word = GetRandomClue(category);
+            Console.Clear();
+            Console.WriteLine($"Your clue consist of {word.Length} letters");
+            string hiddenWord = "";
+            for (int i = 0; i < word.Length; i++)
+            {
+                hiddenWord = hiddenWord + Characters.Underscore + Characters.WhiteSpace;
+            }
+            Console.WriteLine(hiddenWord);
+            GuessClue(word, hiddenWord, category);
+            return hiddenWord;
+        }
+
         private List<string> GetClueList(CategoryName categoryName)
         {
-            string directoryPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues";
-            string iTPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\IT.txt";
-            string countriesPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\Coutries.txt";
-            string foodPath = @"C:\Users\paull\source\repos\HangmanQuiz\HangmanQuiz\Clues\Food.txt";
-            bool directoryExist = Directory.Exists(directoryPath);
+            bool directoryExist = Directory.Exists(Helpers.Path.directoryPath);
             if (!directoryExist)
             {
-                Directory.CreateDirectory(directoryPath);
-                using (FileStream streamFile = File.Open(iTPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                Directory.CreateDirectory(Helpers.Path.directoryPath);
+                using (FileStream streamFile = File.Open(Helpers.Path.iTPath, FileMode.CreateNew, FileAccess.ReadWrite))
                 { 
                     using (StreamWriter streamWriterIt = new StreamWriter(streamFile))
                     {
@@ -35,7 +42,7 @@ namespace HangmanQuiz
                         streamWriterIt.WriteLine("cookies");
                     }
                 }
-                using (FileStream streamFile = File.Open(countriesPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                using (FileStream streamFile = File.Open(Helpers.Path.countriesPath, FileMode.CreateNew, FileAccess.ReadWrite))
                 {
                     using (StreamWriter streamWriterCountries = new StreamWriter(streamFile))
                     {
@@ -47,7 +54,7 @@ namespace HangmanQuiz
                         streamWriterCountries.WriteLine("russia");
                     }
                 }
-                using (FileStream streamFile = File.Open(foodPath, FileMode.CreateNew, FileAccess.ReadWrite))
+                using (FileStream streamFile = File.Open(Helpers.Path.foodPath, FileMode.CreateNew, FileAccess.ReadWrite))
                 {
                     using (StreamWriter streamWriterFood = new StreamWriter(streamFile))
                     {
@@ -62,43 +69,29 @@ namespace HangmanQuiz
             }
             if(categoryName == CategoryName.IT)
             {
-                List<string> iTClues = File.ReadLines(iTPath).ToList();
+                List<string> iTClues = File.ReadLines(Helpers.Path.iTPath).ToList();
                 return iTClues;
             }
             else if(categoryName == CategoryName.Countries)
             {
-                List<string> countryClues = File.ReadLines(countriesPath).ToList();
+                List<string> countryClues = File.ReadLines(Helpers.Path.countriesPath).ToList();
                 return countryClues;
             }
             else
             {
-                List<string> foodClues = File.ReadLines(foodPath).ToList();
+                List<string> foodClues = File.ReadLines(Helpers.Path.foodPath).ToList();
                 return foodClues;
             }
         }
 
-        public string GetRandomClue(CategoryName categoryName)
+        private string GetRandomClue(CategoryName categoryName)
         {
             List<string> clues = GetClueList(categoryName);
             string word = clues.OrderBy(x => Guid.NewGuid()).First();
             return word;
         }
 
-        public string DisplayClue(CategoryName category)
-        {
-            string word = GetRandomClue(category);
-            Console.Clear();
-            Console.WriteLine($"Your clue consist of {word.Length} letters");
-            string hiddenWord = "";
-            for (int i = 0; i < word.Length; i++)
-            {
-                hiddenWord = hiddenWord + Characters.Underscore + Characters.WhiteSpace;
-            }
-            Console.WriteLine(hiddenWord);
-            GuessClue(word,hiddenWord,category);
-            return hiddenWord;
-        }
-        public bool CheckUserAnswer(string userResponse)
+        private bool CheckUserAnswer(string userResponse)
         {
             bool result = false;
             userResponse = userResponse.ToLower();
@@ -108,28 +101,28 @@ namespace HangmanQuiz
                 result = false;
                 Console.WriteLine("You enter to many signs, please try again.");
             }
-            else if (String.IsNullOrEmpty(userResponse))
+            else if (string.IsNullOrEmpty(userResponse))
             {
                 result = false;
                 Console.WriteLine("You didn't give an answer, Please try again.");
             }
-            else if (!Char.IsLetter(userResponseArr[0]))
+            else if (!char.IsLetter(userResponseArr[0]))
             {
                 result = true;
                 Console.WriteLine("Incorrect answer, please enter a letter.");
             }
             return result;
         }
-        public string GuessClue(string word, string hiddenWord, CategoryName categoryName)
+
+        private void GuessClue(string word, string hiddenWord, CategoryName categoryName)
         {
             int numberOfTrialsLimit = word.Length + 2;
             int numberOfTrials = 0;
             word = string.Join(" ", word.ToCharArray());
             while (hiddenWord.Contains(Characters.Underscore))
             {
-                string userResponse = "";
                 Console.WriteLine("Enter only one letter:");
-                userResponse = Console.ReadLine();
+                string userResponse = Console.ReadLine();
                 CheckUserAnswer(userResponse);
                 for (int i = 0; i < word.Length; i++)
                 {
@@ -165,10 +158,9 @@ namespace HangmanQuiz
             Console.ReadKey();
             Console.Clear();
             NewGame();
-
-            return hiddenWord;
         }
-        public void NewGame()
+
+        private void NewGame()
         {
             Console.WriteLine("Are you ready for the next game?");
             Console.WriteLine("Click right answer:");

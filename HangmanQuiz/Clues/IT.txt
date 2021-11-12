@@ -1,6 +1,0 @@
-keyboard
-mouse
-network
-browser
-server
-cookies
